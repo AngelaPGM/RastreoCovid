@@ -7,6 +7,8 @@ package Frames;
 
 import RastreoCovid.dao.PeopleJpaController;
 import RastreoCovid.entity.People;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -27,16 +29,34 @@ public class Principal extends javax.swing.JFrame {
      */
     public Principal() {
         initComponents();
-        crearModelo();
-        cargarInfo();
+        
+        setIconoBoton();
+   
+        crearTablaPersonas();
+        cargarInfoPersonas();
     }
 
-    DefaultTableModel modelo2;
+    private void setIconoBoton() {
+        ImageIcon iconD = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("FlechaD2.png")));
+        Image img = iconD.getImage();  
+        
+        Image newimg = img.getScaledInstance(bDer.getWidth(), bDer.getHeight(),  java.awt.Image.SCALE_SMOOTH );  
+        iconD = new ImageIcon(newimg);
+        bDer.setIcon(iconD);
+        
+        ImageIcon iconI = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("FlechaI2.png")));
+        img = iconI.getImage();  
+        
+        Image newimg2 = img.getScaledInstance(bIzq.getWidth(), bIzq.getHeight(),  java.awt.Image.SCALE_SMOOTH );  
+        iconI = new ImageIcon(newimg2);
+        bIzq.setIcon(iconI);
+    }
+    DefaultTableModel modeloPersonas;
 
     //esto crea la tabla de Personas
-    private void crearModelo() {
+    private void crearTablaPersonas() {
         try {
-            modelo2 = (new DefaultTableModel(
+            modeloPersonas = (new DefaultTableModel(
                     null, new String[]{
                         "ID", "Nombre",
                         "Apellidos"}) {
@@ -59,23 +79,23 @@ public class Principal extends javax.swing.JFrame {
                     return canEdit[colIndex];
                 }
             });
-            tabla.setModel(modelo2);
+            tabla.setModel(modeloPersonas);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.toString() + "error2");
         }
     }
     
     //Esto rellena la tabla de personas
-    private void cargarInfo() {
+    private void cargarInfoPersonas() {
         try {
             Object o[] = null;
             List<People> listP = CPeople.findPeopleEntities();
             
             for(int i = 0; i < listP.size(); i++) {
-                modelo2.addRow(o);
-                modelo2.setValueAt(listP.get(i).getId(), i, 0);
-                modelo2.setValueAt(listP.get(i).getFirstname(), i, 1);
-                modelo2.setValueAt(listP.get(i).getLastname(), i, 2);
+                modeloPersonas.addRow(o);
+                modeloPersonas.setValueAt(listP.get(i).getId(), i, 0);
+                modeloPersonas.setValueAt(listP.get(i).getFirstname(), i, 1);
+                modeloPersonas.setValueAt(listP.get(i).getLastname(), i, 2);
                 
                 tabla.getColumnModel().getColumn(0).setPreferredWidth(50);
                 tabla.getColumnModel().getColumn(0).setMaxWidth(50);
@@ -100,8 +120,15 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabla = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tabla2 = new javax.swing.JList<>();
+        jLabel5 = new javax.swing.JLabel();
+        bDer = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        bIzq = new javax.swing.JButton();
+        lFondo = new javax.swing.JLabel();
+        jPersonas = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Rastreo Covid19");
@@ -114,7 +141,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Personas");
         jPanel2.add(jLabel1);
-        jLabel1.setBounds(190, 40, 96, 29);
+        jLabel1.setBounds(210, 40, 96, 29);
 
         tabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -135,24 +162,61 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tabla);
 
         jPanel2.add(jScrollPane1);
-        jScrollPane1.setBounds(20, 90, 430, 340);
+        jScrollPane1.setBounds(40, 90, 430, 260);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Amigos");
         jPanel2.add(jLabel3);
-        jLabel3.setBounds(640, 40, 80, 40);
+        jLabel3.setBounds(580, 40, 80, 40);
 
-        jLabel4.setIcon(new javax.swing.ImageIcon("C:\\Users\\angep\\OneDrive\\Documentos\\NetBeansProjects\\RastreoCovid\\fondo.png")); // NOI18N
-        jLabel4.setText(" ");
-        jPanel2.add(jLabel4);
-        jLabel4.setBounds(0, -40, 1510, 840);
+        jScrollPane2.setViewportView(tabla2);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Personas");
-        jPanel2.add(jLabel2);
-        jLabel2.setBounds(190, 40, 96, 29);
+        jPanel2.add(jScrollPane2);
+        jScrollPane2.setBounds(510, 90, 220, 260);
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setText("Disponibles");
+        jPanel2.add(jLabel5);
+        jLabel5.setBounds(950, 40, 140, 40);
+
+        bDer.setBackground(new java.awt.Color(255, 255, 255));
+        bDer.setIcon(new javax.swing.ImageIcon("C:\\Users\\angep\\OneDrive\\Documentos\\NetBeansProjects\\RastreoCovid\\FlechaD.png")); // NOI18N
+        bDer.setToolTipText("");
+        bDer.setBorderPainted(false);
+        bDer.setContentAreaFilled(false);
+        bDer.setFocusPainted(false);
+        bDer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDerActionPerformed(evt);
+            }
+        });
+        jPanel2.add(bDer);
+        bDer.setBounds(760, 150, 70, 40);
+
+        jScrollPane3.setViewportView(jList1);
+
+        jPanel2.add(jScrollPane3);
+        jScrollPane3.setBounds(870, 90, 260, 260);
+
+        bIzq.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frames/FlechaI2.png"))); // NOI18N
+        bIzq.setBorderPainted(false);
+        bIzq.setContentAreaFilled(false);
+        bIzq.setFocusPainted(false);
+        jPanel2.add(bIzq);
+        bIzq.setBounds(760, 240, 70, 40);
+
+        lFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frames/fondo.png"))); // NOI18N
+        lFondo.setText(" ");
+        jPanel2.add(lFondo);
+        lFondo.setBounds(0, -40, 1400, 800);
+
+        jPersonas.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jPersonas.setForeground(new java.awt.Color(255, 255, 255));
+        jPersonas.setText("Personas");
+        jPanel2.add(jPersonas);
+        jPersonas.setBounds(190, 40, 96, 29);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -175,6 +239,7 @@ public class Principal extends javax.swing.JFrame {
         TableModel model = tabla.getModel();
         int id = Integer.parseInt(model.getValueAt(index, 0).toString());
         p = new People(id);
+        
         mostrarSeleccionado();
          //JOptionPane.showMessageDialog(rootPane, "Has seleccionado "+id);
             } catch (Exception ex) {
@@ -182,6 +247,10 @@ public class Principal extends javax.swing.JFrame {
             }
         }            
     }//GEN-LAST:event_tablaMouseClicked
+
+    private void bDerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bDerActionPerformed
 
      private void mostrarSeleccionado() {
             if (p == null) {
@@ -226,12 +295,19 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bDer;
+    private javax.swing.JButton bIzq;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel jPersonas;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lFondo;
     private javax.swing.JTable tabla;
+    private javax.swing.JList<String> tabla2;
     // End of variables declaration//GEN-END:variables
 }
