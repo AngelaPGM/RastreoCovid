@@ -28,9 +28,7 @@ public class Principal extends javax.swing.JFrame {
     ImageIcon imageFondo = new ImageIcon("fondo.png");
     PeopleJpaController CPeople = new PeopleJpaController();
     DefaultTableModel modeloPersonas;   //tabla de Personas
-    DefaultListModel modeloAmigos = new DefaultListModel<>();
-
-    ;    //lista de amigos
+    DefaultListModel modeloAmigos = new DefaultListModel<>();  //lista de amigos
     
     /**
      * Creates new form Principal
@@ -95,6 +93,7 @@ public class Principal extends javax.swing.JFrame {
         try {
             Object o[] = null;
             List<People> listP = CPeople.findPeopleEntities();
+            
 
             for (int i = 0; i < listP.size(); i++) {
                 modeloPersonas.addRow(o);
@@ -131,7 +130,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         bDer = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        tabla3 = new javax.swing.JList<>();
         bIzq = new javax.swing.JButton();
         lFondo = new javax.swing.JLabel();
         jPersonas = new javax.swing.JLabel();
@@ -200,7 +199,7 @@ public class Principal extends javax.swing.JFrame {
         jPanel2.add(bDer);
         bDer.setBounds(760, 150, 70, 40);
 
-        jScrollPane3.setViewportView(jList1);
+        jScrollPane3.setViewportView(tabla3);
 
         jPanel2.add(jScrollPane3);
         jScrollPane3.setBounds(870, 90, 260, 260);
@@ -236,11 +235,12 @@ public class Principal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+   
     //AQUI SE SELECCIONA A UNA PERSONA DE LA LISTA DE AMIGOS
     private void tablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaMouseClicked
         modeloAmigos.clear();
         tabla2.setModel(modeloAmigos);
-
+       
         if (tabla.getSelectedRowCount() > 0) {
             try {
                 int index = tabla.getSelectedRow();
@@ -320,7 +320,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel jPersonas;
     private javax.swing.JScrollPane jScrollPane1;
@@ -329,5 +328,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel lFondo;
     private javax.swing.JTable tabla;
     private javax.swing.JList<String> tabla2;
+    private javax.swing.JList<String> tabla3;
     // End of variables declaration//GEN-END:variables
 }
