@@ -9,7 +9,11 @@ import RastreoCovid.dao.PeopleJpaController;
 import RastreoCovid.entity.People;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.time.Clock;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
@@ -20,38 +24,39 @@ import javax.swing.table.TableModel;
  * @author angep
  */
 public class Principal extends javax.swing.JFrame {
+
     ImageIcon imageFondo = new ImageIcon("fondo.png");
     PeopleJpaController CPeople = new PeopleJpaController();
-    private People p;
+    DefaultTableModel modeloPersonas;   //tabla de Personas
+    DefaultListModel modeloAmigos = new DefaultListModel<>();
+
+    ;    //lista de amigos
     
     /**
      * Creates new form Principal
      */
     public Principal() {
         initComponents();
-        
         setIconoBoton();
-   
         crearTablaPersonas();
         cargarInfoPersonas();
     }
 
     private void setIconoBoton() {
         ImageIcon iconD = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("FlechaD2.png")));
-        Image img = iconD.getImage();  
-        
-        Image newimg = img.getScaledInstance(bDer.getWidth(), bDer.getHeight(),  java.awt.Image.SCALE_SMOOTH );  
+        Image img = iconD.getImage();
+
+        Image newimg = img.getScaledInstance(bDer.getWidth(), bDer.getHeight(), java.awt.Image.SCALE_SMOOTH);
         iconD = new ImageIcon(newimg);
         bDer.setIcon(iconD);
-        
+
         ImageIcon iconI = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("FlechaI2.png")));
-        img = iconI.getImage();  
-        
-        Image newimg2 = img.getScaledInstance(bIzq.getWidth(), bIzq.getHeight(),  java.awt.Image.SCALE_SMOOTH );  
+        img = iconI.getImage();
+
+        Image newimg2 = img.getScaledInstance(bIzq.getWidth(), bIzq.getHeight(), java.awt.Image.SCALE_SMOOTH);
         iconI = new ImageIcon(newimg2);
         bIzq.setIcon(iconI);
     }
-    DefaultTableModel modeloPersonas;
 
     //esto crea la tabla de Personas
     private void crearTablaPersonas() {
@@ -84,24 +89,25 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e.toString() + "error2");
         }
     }
-    
+
     //Esto rellena la tabla de personas
     private void cargarInfoPersonas() {
         try {
             Object o[] = null;
             List<People> listP = CPeople.findPeopleEntities();
-            
-            for(int i = 0; i < listP.size(); i++) {
+
+            for (int i = 0; i < listP.size(); i++) {
                 modeloPersonas.addRow(o);
                 modeloPersonas.setValueAt(listP.get(i).getId(), i, 0);
                 modeloPersonas.setValueAt(listP.get(i).getFirstname(), i, 1);
                 modeloPersonas.setValueAt(listP.get(i).getLastname(), i, 2);
-                
+
+                //esto pone la columna id mas pequeña
                 tabla.getColumnModel().getColumn(0).setPreferredWidth(50);
                 tabla.getColumnModel().getColumn(0).setMaxWidth(50);
             }
-            
-        }catch (Exception e) {
+
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
@@ -182,7 +188,6 @@ public class Principal extends javax.swing.JFrame {
         jLabel5.setBounds(950, 40, 140, 40);
 
         bDer.setBackground(new java.awt.Color(255, 255, 255));
-        bDer.setIcon(new javax.swing.ImageIcon("C:\\Users\\angep\\OneDrive\\Documentos\\NetBeansProjects\\RastreoCovid\\FlechaD.png")); // NOI18N
         bDer.setToolTipText("");
         bDer.setBorderPainted(false);
         bDer.setContentAreaFilled(false);
@@ -231,34 +236,49 @@ public class Principal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    //AQUI SE SELECCIONA A UNA PERSONA DE LA LISTA DE AMIGOS
     private void tablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaMouseClicked
-        if(tabla.getSelectedRowCount() > 0) {
+        modeloAmigos.clear();
+        tabla2.setModel(modeloAmigos);
+
+        if (tabla.getSelectedRowCount() > 0) {
             try {
                 int index = tabla.getSelectedRow();
-        TableModel model = tabla.getModel();
-        int id = Integer.parseInt(model.getValueAt(index, 0).toString());
-        p = new People(id);
-        
-        mostrarSeleccionado();
-         //JOptionPane.showMessageDialog(rootPane, "Has seleccionado "+id);
+                TableModel model = tabla.getModel();
+                int id = Integer.parseInt(model.getValueAt(index, 0).toString());
+
+                mostrarAmigosSeleccionado(id);
+                //JOptionPane.showMessageDialog(rootPane, "Has seleccionado "+id);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(rootPane, ex);
             }
-        }            
+        }
     }//GEN-LAST:event_tablaMouseClicked
 
     private void bDerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDerActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_bDerActionPerformed
 
-     private void mostrarSeleccionado() {
-            if (p == null) {
-                
-            } else {
-                
+    private void mostrarAmigosSeleccionado(int id) {
+        People p = CPeople.findPeople(id);
+
+        if (!p.getPeopleList().isEmpty()) {
+            for (int i = 0; i < p.getPeopleList().size(); i++) {
+                modeloAmigos.addElement(p.getPeopleList().get(i).getId() + "; " + p.getPeopleList().get(i).getFirstname() + "; " + p.getPeopleList().get(i).getLastname());
             }
+
         }
+        if (!p.getPeopleList1().isEmpty()) {
+            for (int i = 0; i < p.getPeopleList1().size(); i++) {
+                String amigo = p.getPeopleList1().get(i).getId() + "; " + p.getPeopleList1().get(i).getFirstname() + "; " + p.getPeopleList1().get(i).getLastname();
+                if (!modeloAmigos.contains(amigo)) {
+                    modeloAmigos.addElement(amigo);
+                }
+            }
+            tabla2.setModel(modeloAmigos);
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
