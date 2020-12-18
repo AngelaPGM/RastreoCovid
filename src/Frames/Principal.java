@@ -9,9 +9,8 @@ import RastreoCovid.dao.PeopleJpaController;
 import RastreoCovid.entity.People;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.time.Clock;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -28,9 +27,10 @@ public class Principal extends javax.swing.JFrame {
     ImageIcon imageFondo = new ImageIcon("fondo.png");
     PeopleJpaController CPeople = new PeopleJpaController();
     DefaultTableModel modeloPersonas;   //tabla de Personas
-    DefaultListModel modeloAmigos = new DefaultListModel<>();  //lista de amigos
-    DefaultListModel modeloDisponibles = new DefaultListModel<>(); //lista de disponibles
+    DefaultListModel modeloAmigos = new DefaultListModel<>();  //modelo lista de amigos
+    DefaultListModel modeloDisponibles = new DefaultListModel<>(); //modelo lista de disponibles
     List<People> listP = CPeople.findPeopleEntities(); //Lista de todas las Personas.
+
     /**
      * Creates new form Principal
      */
@@ -240,14 +240,14 @@ public class Principal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-   
+
     //AQUI SE SELECCIONA A UNA PERSONA DE LA LISTA DE AMIGOS
     private void tablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaMouseClicked
         modeloAmigos.clear();
         modeloDisponibles.clear();
         tabla2.setModel(modeloAmigos);
         tabla3.setModel(modeloDisponibles);
-       
+
         if (tabla.getSelectedRowCount() > 0) {
             try {
                 int index = tabla.getSelectedRow();
@@ -256,7 +256,7 @@ public class Principal extends javax.swing.JFrame {
 
                 mostrarAmigosSeleccionado(id);
                 mostrarDisponiblesSeleccionado(id);
-                
+
                 //JOptionPane.showMessageDialog(rootPane, "Has seleccionado "+id);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(rootPane, ex);
@@ -274,38 +274,43 @@ public class Principal extends javax.swing.JFrame {
 
     private void mostrarAmigosSeleccionado(int id) {
         People p = CPeople.findPeople(id);
+        List<String> listaAmigos = new ArrayList();
 
         if (!p.getPeopleList().isEmpty()) {
             for (int i = 0; i < p.getPeopleList().size(); i++) {
-                modeloAmigos.addElement(p.getPeopleList().get(i).getId() + "; " + p.getPeopleList().get(i).getFirstname() + "; " + p.getPeopleList().get(i).getLastname());
+                listaAmigos.add(p.getPeopleList().get(i).getId() + "; " + p.getPeopleList().get(i).getFirstname() + "; " + p.getPeopleList().get(i).getLastname());
             }
 
         }
         if (!p.getPeopleList1().isEmpty()) {
             for (int i = 0; i < p.getPeopleList1().size(); i++) {
                 String amigo = p.getPeopleList1().get(i).getId() + "; " + p.getPeopleList1().get(i).getFirstname() + "; " + p.getPeopleList1().get(i).getLastname();
-                if (!modeloAmigos.contains(amigo)) {
-                    modeloAmigos.addElement(amigo);
+                if (!listaAmigos.contains(amigo)) {
+                    listaAmigos.add(amigo);
                 }
             }
-            tabla2.setModel(modeloAmigos);
         }
+        Collections.sort(listaAmigos);
+        for (int i = 0; i < listaAmigos.size(); i++) {
+            modeloAmigos.addElement(listaAmigos.get(i));
+        }
+        tabla2.setModel(modeloAmigos);
     }
-    
+
     private void mostrarDisponiblesSeleccionado(int id) {
-            People p = CPeople.findPeople(id);
-            int idPersona;
-       if(!listP.isEmpty()){
-            for (int i = 0; i < listP.size(); i++){
-              String persona = listP.get(i).getId() + "; " + listP.get(i).getFirstname() + "; " + listP.get(i).getLastname();
-              idPersona=listP.get(i).getId();
-              if(!modeloAmigos.contains(persona) && idPersona!=id){
+        int idPersona;
+        if (!listP.isEmpty()) {
+            for (int i = 0; i < listP.size(); i++) {
+                String persona = listP.get(i).getId() + "; " + listP.get(i).getFirstname() + "; " + listP.get(i).getLastname();
+                idPersona = listP.get(i).getId();
+                if (!modeloAmigos.contains(persona) && idPersona != id) {
                     modeloDisponibles.addElement(persona);
-              }
+                }
             }
             tabla3.setModel(modeloDisponibles);
-       }
+        }
     }
+
     /**
      * @param args the command line arguments
      */
@@ -358,5 +363,4 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JList<String> tabla3;
     // End of variables declaration//GEN-END:variables
 
-   
 }
