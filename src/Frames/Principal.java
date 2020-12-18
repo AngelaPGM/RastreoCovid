@@ -29,7 +29,8 @@ public class Principal extends javax.swing.JFrame {
     PeopleJpaController CPeople = new PeopleJpaController();
     DefaultTableModel modeloPersonas;   //tabla de Personas
     DefaultListModel modeloAmigos = new DefaultListModel<>();  //lista de amigos
-    
+    DefaultListModel modeloDisponibles = new DefaultListModel<>(); //lista de disponibles
+    List<People> listP = CPeople.findPeopleEntities(); //Lista de todas las Personas.
     /**
      * Creates new form Principal
      */
@@ -92,8 +93,6 @@ public class Principal extends javax.swing.JFrame {
     private void cargarInfoPersonas() {
         try {
             Object o[] = null;
-            List<People> listP = CPeople.findPeopleEntities();
-            
 
             for (int i = 0; i < listP.size(); i++) {
                 modeloPersonas.addRow(o);
@@ -175,6 +174,11 @@ public class Principal extends javax.swing.JFrame {
         jPanel2.add(jLabel3);
         jLabel3.setBounds(580, 40, 80, 40);
 
+        tabla2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabla2MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tabla2);
 
         jPanel2.add(jScrollPane2);
@@ -187,6 +191,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel5.setBounds(950, 40, 140, 40);
 
         bDer.setBackground(new java.awt.Color(255, 255, 255));
+        bDer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Frames/FlechaD2.png"))); // NOI18N
         bDer.setToolTipText("");
         bDer.setBorderPainted(false);
         bDer.setContentAreaFilled(false);
@@ -239,7 +244,9 @@ public class Principal extends javax.swing.JFrame {
     //AQUI SE SELECCIONA A UNA PERSONA DE LA LISTA DE AMIGOS
     private void tablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaMouseClicked
         modeloAmigos.clear();
+        modeloDisponibles.clear();
         tabla2.setModel(modeloAmigos);
+        tabla3.setModel(modeloDisponibles);
        
         if (tabla.getSelectedRowCount() > 0) {
             try {
@@ -248,6 +255,8 @@ public class Principal extends javax.swing.JFrame {
                 int id = Integer.parseInt(model.getValueAt(index, 0).toString());
 
                 mostrarAmigosSeleccionado(id);
+                mostrarDisponiblesSeleccionado(id);
+                
                 //JOptionPane.showMessageDialog(rootPane, "Has seleccionado "+id);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(rootPane, ex);
@@ -258,6 +267,10 @@ public class Principal extends javax.swing.JFrame {
     private void bDerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDerActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_bDerActionPerformed
+
+    private void tabla2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla2MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tabla2MouseClicked
 
     private void mostrarAmigosSeleccionado(int id) {
         People p = CPeople.findPeople(id);
@@ -278,7 +291,21 @@ public class Principal extends javax.swing.JFrame {
             tabla2.setModel(modeloAmigos);
         }
     }
-
+    
+    private void mostrarDisponiblesSeleccionado(int id) {
+            People p = CPeople.findPeople(id);
+            int idPersona;
+       if(!listP.isEmpty()){
+            for (int i = 0; i < listP.size(); i++){
+              String persona = listP.get(i).getId() + "; " + listP.get(i).getFirstname() + "; " + listP.get(i).getLastname();
+              idPersona=listP.get(i).getId();
+              if(!modeloAmigos.contains(persona) && idPersona!=id){
+                    modeloDisponibles.addElement(persona);
+              }
+            }
+            tabla3.setModel(modeloDisponibles);
+       }
+    }
     /**
      * @param args the command line arguments
      */
@@ -330,4 +357,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JList<String> tabla2;
     private javax.swing.JList<String> tabla3;
     // End of variables declaration//GEN-END:variables
+
+   
 }
