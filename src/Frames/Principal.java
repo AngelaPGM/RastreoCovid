@@ -30,6 +30,9 @@ public class Principal extends javax.swing.JFrame {
     DefaultListModel modeloAmigos = new DefaultListModel<>();  //modelo lista de amigos
     DefaultListModel modeloDisponibles = new DefaultListModel<>(); //modelo lista de disponibles
     List<People> listP = CPeople.findPeopleEntities(); //Lista de todas las Personas.
+    List<String> listaAmigos = new ArrayList(); //Lista de Amigos por GetList().
+    List<String> listaAmigos1 = new ArrayList(); //Lista de Amigos por GetList1().
+    People p = new People();
 
     /**
      * Creates new form Principal
@@ -38,7 +41,7 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
         setIconoBoton();
         crearTablaPersonas();
-        cargarInfoPersonas();
+        rellenarTablaPersonas();
     }
 
     private void setIconoBoton() {
@@ -90,7 +93,7 @@ public class Principal extends javax.swing.JFrame {
     }
 
     //Esto rellena la tabla de personas
-    private void cargarInfoPersonas() {
+    private void rellenarTablaPersonas() {
         try {
             Object o[] = null;
 
@@ -241,7 +244,7 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    //AQUI SE SELECCIONA A UNA PERSONA DE LA LISTA DE AMIGOS
+    //AQUI SE SELECCIONA A UNA PERSONA DE LA LISTA DE PERSONAS
     private void tablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaMouseClicked
         modeloAmigos.clear();
         modeloDisponibles.clear();
@@ -253,9 +256,10 @@ public class Principal extends javax.swing.JFrame {
                 int index = tabla.getSelectedRow();
                 TableModel model = tabla.getModel();
                 int id = Integer.parseInt(model.getValueAt(index, 0).toString());
-
-                mostrarAmigosSeleccionado(id);
-                mostrarDisponiblesSeleccionado(id);
+                p = CPeople.findPeople(id);
+                rellenarTablaAmigos();
+                rellenarTablaDisponibles();
+                actualizarListaAmigosString();
 
                 //JOptionPane.showMessageDialog(rootPane, "Has seleccionado "+id);
             } catch (Exception ex) {
@@ -265,50 +269,94 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_tablaMouseClicked
 
     private void bDerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bDerActionPerformed
+        if (!tabla2.isSelectionEmpty()) {
+            int posicion;
+            List<People> listaModificada;
+            actualizarListaAmigosString();
+           
+            try {
+                String amigoSeleccionado = tabla2.getSelectedValue();
+                posicion = listaAmigos.indexOf(amigoSeleccionado);
 
+                if (posicion != -1) {
+                    listaModificada = p.getPeopleList();
+                    listaModificada.remove(posicion);
+                    p.setPeopleList(listaModificada);   
+                } else {
+                    posicion = listaAmigos1.indexOf(amigoSeleccionado);
+                    System.out.println(posicion);
+                    listaModificada = p.getPeopleList1();
+                    listaModificada.remove(posicion);
+                    p.setPeopleList1(listaModificada);                  
+                }
+                CPeople.edit(p);
+                rellenarTablaAmigos();
+                rellenarTablaDisponibles();
+                
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(rootPane, ex);
+            }
+        }
+    }//GEN-LAST:event_bDerActionPerformed
+//  APARENTEMENTE ESTE METODO NO HACE FALTA
     private void tabla2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla2MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_tabla2MouseClicked
 
-    private void mostrarAmigosSeleccionado(int id) {
-        People p = CPeople.findPeople(id);
-        List<String> listaAmigos = new ArrayList();
+    private void rellenarTablaAmigos() {
+        modeloAmigos.clear();
+        tabla2.setModel(modeloAmigos);
+
+        List<String> listaTotalAmigos = new ArrayList();
 
         if (!p.getPeopleList().isEmpty()) {
             for (int i = 0; i < p.getPeopleList().size(); i++) {
-                listaAmigos.add(p.getPeopleList().get(i).getId() + "; " + p.getPeopleList().get(i).getFirstname() + "; " + p.getPeopleList().get(i).getLastname());
+                listaTotalAmigos.add(p.getPeopleList().get(i).getId() + "; " + p.getPeopleList().get(i).getFirstname() + "; " + p.getPeopleList().get(i).getLastname());
             }
 
         }
         if (!p.getPeopleList1().isEmpty()) {
             for (int i = 0; i < p.getPeopleList1().size(); i++) {
                 String amigo = p.getPeopleList1().get(i).getId() + "; " + p.getPeopleList1().get(i).getFirstname() + "; " + p.getPeopleList1().get(i).getLastname();
-                if (!listaAmigos.contains(amigo)) {
-                    listaAmigos.add(amigo);
+                if (!listaTotalAmigos.contains(amigo)) {
+                    listaTotalAmigos.add(amigo);
                 }
             }
         }
-        Collections.sort(listaAmigos);
-        for (int i = 0; i < listaAmigos.size(); i++) {
-            modeloAmigos.addElement(listaAmigos.get(i));
+        Collections.sort(listaTotalAmigos);
+        for (int i = 0; i < listaTotalAmigos.size(); i++) {
+            modeloAmigos.addElement(listaTotalAmigos.get(i));
         }
         tabla2.setModel(modeloAmigos);
     }
 
-    private void mostrarDisponiblesSeleccionado(int id) {
+    private void rellenarTablaDisponibles() {
+        modeloDisponibles.clear();
+        tabla3.setModel(modeloDisponibles);
         int idPersona;
         if (!listP.isEmpty()) {
             for (int i = 0; i < listP.size(); i++) {
                 String persona = listP.get(i).getId() + "; " + listP.get(i).getFirstname() + "; " + listP.get(i).getLastname();
                 idPersona = listP.get(i).getId();
-                if (!modeloAmigos.contains(persona) && idPersona != id) {
+                if (!modeloAmigos.contains(persona) && idPersona != p.getId()) {
                     modeloDisponibles.addElement(persona);
                 }
             }
             tabla3.setModel(modeloDisponibles);
         }
+    }
+
+    private void actualizarListaAmigosString() {
+        listaAmigos.clear();
+        listaAmigos1.clear();
+            
+            for (int i = 0; i < p.getPeopleList().size(); i++) {
+                listaAmigos.add(p.getPeopleList().get(i).getId() + "; " + p.getPeopleList().get(i).getFirstname() + "; " + p.getPeopleList().get(i).getLastname());
+            }
+
+            for (int i = 0; i < p.getPeopleList1().size(); i++) {
+                listaAmigos1.add(p.getPeopleList1().get(i).getId() + "; " + p.getPeopleList1().get(i).getFirstname() + "; " + p.getPeopleList1().get(i).getLastname());
+            }      
     }
 
     /**
