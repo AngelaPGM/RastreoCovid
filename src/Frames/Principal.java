@@ -284,7 +284,6 @@ public class Principal extends javax.swing.JFrame {
                     p.setPeopleList(listaModificada);   
                 } else {
                     posicion = listaAmigos1.indexOf(amigoSeleccionado);
-                    System.out.println(posicion);
                     listaModificada = p.getPeopleList1();
                     listaModificada.remove(posicion);
                     p.setPeopleList1(listaModificada);                  
