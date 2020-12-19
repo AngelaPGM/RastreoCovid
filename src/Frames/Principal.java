@@ -216,6 +216,11 @@ public class Principal extends javax.swing.JFrame {
         bIzq.setBorderPainted(false);
         bIzq.setContentAreaFilled(false);
         bIzq.setFocusPainted(false);
+        bIzq.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bIzqActionPerformed(evt);
+            }
+        });
         jPanel2.add(bIzq);
         bIzq.setBounds(760, 240, 70, 40);
 
@@ -301,6 +306,29 @@ public class Principal extends javax.swing.JFrame {
     private void tabla2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla2MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_tabla2MouseClicked
+
+    private void bIzqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bIzqActionPerformed
+        if (!tabla3.isSelectionEmpty()){
+        int id;
+        List<People> listaModificada;
+        People personaDisponible = new People();
+        
+            try{
+                    String amigoSeleccionado = tabla3.getSelectedValue();
+                    id = Character.getNumericValue(amigoSeleccionado.charAt(0));
+                    personaDisponible = CPeople.findPeople(id);
+                    listaModificada = p.getPeopleList();
+                    listaModificada.add(personaDisponible);
+                    p.setPeopleList(listaModificada);
+                    CPeople.edit(p);
+                    rellenarTablaAmigos();
+                    rellenarTablaDisponibles();
+                
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(rootPane, ex);
+                }
+        }
+    }//GEN-LAST:event_bIzqActionPerformed
 
     private void rellenarTablaAmigos() {
         modeloAmigos.clear();
