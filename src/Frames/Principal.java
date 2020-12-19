@@ -315,7 +315,9 @@ public class Principal extends javax.swing.JFrame {
         
             try{
                     String amigoSeleccionado = tabla3.getSelectedValue();
-                    id = Character.getNumericValue(amigoSeleccionado.charAt(0));
+                    String[] partes = amigoSeleccionado.split(";");
+                    String idString = partes [0];
+                    id = Integer.parseInt(idString);
                     personaDisponible = CPeople.findPeople(id);
                     listaModificada = p.getPeopleList();
                     listaModificada.add(personaDisponible);
