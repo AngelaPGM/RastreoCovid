@@ -9,8 +9,6 @@ import RastreoCovid.dao.PeopleJpaController;
 import RastreoCovid.entity.People;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,14 +17,12 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.TableModel;
 
 /**
  *
  * @author angep
  */
 public class Principal extends javax.swing.JFrame {
-
     ImageIcon imageFondo = new ImageIcon("fondo.png");
     PeopleJpaController CPeople = new PeopleJpaController();
     List<People> listP = CPeople.findPeopleEntities(); //Lista de todas las Personas.
@@ -43,6 +39,7 @@ public class Principal extends javax.swing.JFrame {
         setIconoBoton();
         crearTablaPersonas();
         rellenarTablaPersonas();
+        
     }
 
 
@@ -68,6 +65,7 @@ public class Principal extends javax.swing.JFrame {
         setTitle("Rastreo Covid19");
         setBounds(new java.awt.Rectangle(500, 200, 400, 300));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setResizable(false);
 
         jPanel2.setLayout(null);
 
@@ -277,7 +275,7 @@ public class Principal extends javax.swing.JFrame {
         tabla3.setModel(modeloDisponibles);
         
         for(int i = 0; i < listP.size(); i++) {
-            if (!p.getPeopleList().contains(listP.get(i)) && (!p.getPeopleList1().contains(listP.get(i)))) {
+            if (!p.getPeopleList().contains(listP.get(i)) && (!p.getPeopleList1().contains(listP.get(i))) && (!listP.get(i).equals(p))) {
                 modeloDisponibles.addElement(listP.get(i).getId() + "; " + listP.get(i).getFirstname() + "; " + listP.get(i).getLastname());
             }
         }
