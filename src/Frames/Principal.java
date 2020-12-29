@@ -23,13 +23,13 @@ import javax.swing.ListSelectionModel;
  * @author angep
  */
 public class Principal extends javax.swing.JFrame {
-    ImageIcon imageFondo = new ImageIcon("fondo.png");
-    PeopleJpaController CPeople = new PeopleJpaController();
-    List<People> listP = CPeople.findPeopleEntities(); //Lista de todas las Personas.
-    People p = new People();
-    DefaultTableModel modeloPersonas;   //tabla de Personas
-    DefaultListModel modeloAmigos = new DefaultListModel<>();
-    DefaultListModel modeloDisponibles = new DefaultListModel<>();
+    private final ImageIcon imageFondo = new ImageIcon("fondo.png");
+    private PeopleJpaController CPeople = new PeopleJpaController();
+    private List<People> listP = CPeople.findPeopleEntities(); //Lista de todas las Personas.
+    private People p = new People();    //Persona seleccionada
+    private DefaultTableModel modeloPersonas;   //tabla de Personas
+    private DefaultListModel modeloAmigos = new DefaultListModel<>();
+    private DefaultListModel modeloDisponibles = new DefaultListModel<>();
 
     /**
      * Creates new form Principal
@@ -168,7 +168,7 @@ public class Principal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+        //CODIGO DE DISEÑO PARA LOS BOTONES
     private void setIconoBoton() {
         ImageIcon iconD = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("FlechaD2.png")));
         Image img = iconD.getImage();
